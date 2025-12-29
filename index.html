@@ -1,20 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>KES Arbitrage Monitor</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="manifest" href="manifest.json">
-<style>
-body { background:#0f172a; color:#e5e7eb; font-family:Arial }
-h1 { text-align:center }
-.card { background:#020617; margin:10px; padding:12px; border-radius:10px }
-.profit { color:#22c55e; font-weight:bold }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>KES Arbitrage Monitor</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f172a">
+
+  <!-- Basic styling (no framework) -->
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #020617;
+      color: #e5e7eb;
+    }
+
+    header {
+      padding: 16px;
+      background: #020617;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    header p {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    #status {
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #38bdf8;
+    }
+
+    #opps {
+      padding: 8px 0;
+    }
+
+    .opp {
+      padding: 12px 16px;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .opp .route {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .opp .spread {
+      font-size: 16px;
+      font-weight: bold;
+      color: #22c55e;
+    }
+
+    .footer {
+      padding: 12px;
+      text-align: center;
+      font-size: 11px;
+      color: #64748b;
+    }
+  </style>
 </head>
+
 <body>
-<h1>KES Arbitrage Monitor</h1>
-<div id="list"></div>
-<script src="app.js"></script>
+
+  <header>
+    <h1>KES Arbitrage Monitor</h1>
+    <p>Binance & OKX • Live P2P Opportunities</p>
+  </header>
+
+  <div id="status">Loading opportunities…</div>
+
+  <div id="opps"></div>
+
+  <div class="footer">
+    FXageAI • Real P2P arbitrage • KES-based
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
