@@ -1,42 +1,40 @@
+const API = "https://fxageai-backend-1.onrender.com/opportunities";
 
-const REFRESH_MS = 5000;
-const USDT_KES = 128.5; // manual rate for now
-
-const list = document.getElementById("list");
-
-async function fetchBinance() {
-  const r = await fetch("https://api.binance.com/api/v3/ticker/price?symbol=USDTUSD");
-  const j = await r.json();
-  return parseFloat(j.price);
-}
-
-async function fetchOKX() {
-  const r = await fetch("https://www.okx.com/api/v5/market/ticker?instId=USDT-USD");
-  const j = await r.json();
-  return parseFloat(j.data[0].last);
-}
-
-async function update() {
-  list.innerHTML = "<div class='card'>Loading live prices…</div>";
+async function loadOpps() {
+  const status = document.getElementById("status");
+  status.innerText = "Fetching live P2P arbitrage...";
 
   try {
-    const binance = await fetchBinance();
-    const okx = await fetchOKX();
+    const res = await fetch(API);
 
-    const spreadUSD = Math.abs(okx - binance);
-    const spreadKES = (spreadUSD * USDT_KES).toFixed(2);
+    if (!res.ok) {
+      throw new Error("HTTP " + res.status);
+    }
 
-    list.innerHTML = `
-      <div class="card">
-        Binance ↔ OKX<br>
-        USDT (USD proxy)<br>
-        <span class="profit">+${spreadKES} KES</span>
-      </div>
-    `;
-  } catch (e) {
-    list.innerHTML = "<div class='card'>Price fetch blocked — retrying…</div>";
+    const data = await res.json();
+
+    status.innerText = `Top ${data.length} live opportunities`;
+
+    const container = document.getElementById("opps");
+    container.innerHTML = "";
+
+    data.slice(0, 10).forEach(o => {
+      const div = document.createElement("div");
+      div.style.padding = "8px";
+      div.style.borderBottom = "1px solid #ddd";
+
+      div.innerHTML = `
+        <strong>${o.route}</strong><br>
+        Spread: <strong>${Number(o.spread_ksh).toFixed(2)} KES</strong>
+      `;
+      container.appendChild(div);
+    });
+
+  } catch (err) {
+    console.error(err);
+    status.innerText = "❌ Backend not reachable";
   }
 }
 
-update();
-setInterval(update, REFRESH_MS);
+loadOpps();
+setInterval(loadOpps, 15000);
