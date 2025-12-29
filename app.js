@@ -1,57 +1,50 @@
-const API_URL = "https://fxageai-backend-1.onrender.com/opportunities";
+const API = "https://fxageai-backend-1.onrender.com/opportunities";
 
-const statusEl = document.getElementById("status");
-const oppsEl = document.getElementById("opps");
+const status = document.getElementById("status");
+const opps = document.getElementById("opps");
 
-async function loadOpportunities() {
-  statusEl.textContent = "Fetching live P2P opportunities…";
+async function load() {
+  status.textContent = "Scanning live P2P arbitrage…";
+  opps.innerHTML = "";
 
   try {
-    const res = await fetch(API_URL, { cache: "no-store" });
-
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
+    const res = await fetch(API, { cache: "no-store" });
     const data = await res.json();
 
-    if (!Array.isArray(data) || data.length === 0) {
-      statusEl.textContent = "No P2P opportunities available";
-      oppsEl.innerHTML = "";
+    if (data.error) {
+      status.textContent = data.error;
       return;
     }
 
-    statusEl.textContent = `Top ${data.length} live opportunities`;
-    oppsEl.innerHTML = "";
+    status.textContent = "Best arbitrage found";
 
-    data.forEach(o => {
-      const div = document.createElement("div");
-      div.className = "opp";
+    opps.innerHTML = `
+      <div class="opp">
+        <strong>BUY</strong><br>
+        ${data.buy.exchange} • USDT/${data.buy.fiat}<br>
+        ${data.buy.ksh} KES
+      </div>
 
-      // Safe KES display
-      let kshDisplay = "—";
-      if (o.ksh && !isNaN(o.ksh)) {
-        kshDisplay = o.ksh.toFixed(2);
-      }
+      <div class="opp">
+        <strong>SELL</strong><br>
+        ${data.sell.exchange} • USDT/${data.sell.fiat}<br>
+        ${data.sell.ksh} KES
+      </div>
 
-      div.innerHTML = `
-        <div class="route">
-          ${o.source} • USDT/${o.fiat}
-        </div>
-        <div class="spread">
-          ${kshDisplay} KES
-        </div>
-      `;
+      <div class="opp highlight">
+        <strong>SPREAD</strong><br>
+        ${data.spreadKES} KES / USDT
+      </div>
 
-      oppsEl.appendChild(div);
-    });
-
-  } catch (err) {
-    console.error(err);
-    statusEl.textContent = "⚠️ Backend unreachable. Retrying…";
+      <div class="opp profit">
+        <strong>PROFIT on 10,000 KES</strong><br>
+        ${data.profitKES} KES
+      </div>
+    `;
+  } catch (e) {
+    status.textContent = "Backend unreachable";
   }
 }
 
-/* Initial load */
-loadOpportunities();
-
-/* Auto refresh every 15 seconds */
-setInterval(loadOpportunities, 15000);
+load();
+setInterval(load, 15000);
