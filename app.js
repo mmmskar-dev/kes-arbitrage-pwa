@@ -4,38 +4,40 @@ const statusEl = document.getElementById("status");
 const oppsEl = document.getElementById("opps");
 
 async function loadOpportunities() {
-  statusEl.textContent = "Fetching live P2P prices…";
+  statusEl.textContent = "Fetching live P2P opportunities…";
 
   try {
     const res = await fetch(API_URL, { cache: "no-store" });
 
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
-    }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
     const data = await res.json();
 
     if (!Array.isArray(data) || data.length === 0) {
-      statusEl.textContent = "No P2P data available";
+      statusEl.textContent = "No P2P opportunities available";
       oppsEl.innerHTML = "";
       return;
     }
 
-    statusEl.textContent = `Top ${data.length} live corridors`;
+    statusEl.textContent = `Top ${data.length} live opportunities`;
     oppsEl.innerHTML = "";
 
-    data.slice(0, 10).forEach(o => {
+    data.forEach(o => {
       const div = document.createElement("div");
       div.className = "opp";
 
-      const kshValue = Number(o.ksh);
+      // Safe KES display
+      let kshDisplay = "—";
+      if (o.ksh && !isNaN(o.ksh)) {
+        kshDisplay = o.ksh.toFixed(2);
+      }
 
       div.innerHTML = `
         <div class="route">
           ${o.source} • USDT/${o.fiat}
         </div>
         <div class="spread">
-          ${isNaN(kshValue) ? "—" : kshValue.toFixed(2)} KES
+          ${kshDisplay} KES
         </div>
       `;
 
@@ -44,10 +46,12 @@ async function loadOpportunities() {
 
   } catch (err) {
     console.error(err);
-    statusEl.textContent =
-      "⚠️ Backend waking up or unreachable. Retrying…";
+    statusEl.textContent = "⚠️ Backend unreachable. Retrying…";
   }
 }
 
+/* Initial load */
 loadOpportunities();
+
+/* Auto refresh every 15 seconds */
 setInterval(loadOpportunities, 15000);
