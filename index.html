@@ -1,71 +1,20 @@
-const express = require("express");
-const fetch = require("node-fetch");
-const app = express();
-
-app.get("/p2p", async (req, res) => {
-  try {
-    // BINANCE P2P KES
-    const binance = await fetch(
-      "https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          asset: "USDT",
-          fiat: "KES",
-          tradeType: "BUY",
-          page: 1,
-          rows: 1
-        })
-      }
-    ).then(r => r.json());
-
-    const binanceBuy = parseFloat(binance.data[0].adv.price);
-
-    const binanceSellReq = await fetch(
-      "https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          asset: "USDT",
-          fiat: "KES",
-          tradeType: "SELL",
-          page: 1,
-          rows: 1
-        })
-      }
-    ).then(r => r.json());
-
-    const binanceSell = parseFloat(binanceSellReq.data[0].adv.price);
-
-    // OKX P2P KES
-    const okx = await fetch(
-      "https://www.okx.com/v3/c2c/tradingOrders/books",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          side: "buy",
-          baseCurrency: "USDT",
-          quoteCurrency: "KES",
-          page: 1,
-          limit: 1
-        })
-      }
-    ).then(r => r.json());
-
-    const okxBuy = parseFloat(okx.data.buy[0].price);
-    const okxSell = parseFloat(okx.data.sell[0].price);
-
-    res.json({
-      binance: { buy: binanceBuy, sell: binanceSell },
-      okx: { buy: okxBuy, sell: okxSell }
-    });
-
-  } catch (e) {
-    res.status(500).json({ error: "Fetch failed" });
-  }
-});
-
-app.listen(3000, () => console.log("Backend running"));
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>KES Arbitrage Monitor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="manifest.json">
+<style>
+body { background:#0f172a; color:#e5e7eb; font-family:Arial }
+h1 { text-align:center }
+.card { background:#020617; margin:10px; padding:12px; border-radius:10px }
+.profit { color:#22c55e; font-weight:bold }
+</style>
+</head>
+<body>
+<h1>KES Arbitrage Monitor</h1>
+<div id="list"></div>
+<script src="app.js"></script>
+</body>
+</html>
