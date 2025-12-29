@@ -1,40 +1,59 @@
-const API = "https://fxageai-backend-1.onrender.com/opportunities";
 
-async function loadOpps() {
-  const status = document.getElementById("status");
-  status.innerText = "Fetching live P2P arbitrage...";
+const API_URL = "https://fxageai-backend-1.onrender.com/opportunities";
+
+const statusEl = document.getElementById("status");
+const oppsEl = document.getElementById("opps");
+
+async function loadOpportunities() {
+  statusEl.textContent = "Fetching live P2P arbitrage…";
 
   try {
-    const res = await fetch(API);
+    const res = await fetch(API_URL, {
+      cache: "no-store"
+    });
 
     if (!res.ok) {
-      throw new Error("HTTP " + res.status);
+      throw new Error(`HTTP ${res.status}`);
     }
 
     const data = await res.json();
 
-    status.innerText = `Top ${data.length} live opportunities`;
+    if (!Array.isArray(data) || data.length === 0) {
+      statusEl.textContent = "No arbitrage opportunities right now";
+      oppsEl.innerHTML = "";
+      return;
+    }
 
-    const container = document.getElementById("opps");
-    container.innerHTML = "";
+    statusEl.textContent = `Top ${data.length} live opportunities`;
+    oppsEl.innerHTML = "";
 
     data.slice(0, 10).forEach(o => {
       const div = document.createElement("div");
-      div.style.padding = "8px";
-      div.style.borderBottom = "1px solid #ddd";
+      div.className = "opp";
+
+      const spread = Number(o.ksh || 0).toFixed(2);
 
       div.innerHTML = `
-        <strong>${o.route}</strong><br>
-        Spread: <strong>${Number(o.spread_ksh).toFixed(2)} KES</strong>
+        <div class="route">
+          ${o.source} • ${o.fiat} → KES
+        </div>
+        <div class="spread">
+          ${spread} KES
+        </div>
       `;
-      container.appendChild(div);
+
+      oppsEl.appendChild(div);
     });
 
   } catch (err) {
-    console.error(err);
-    status.innerText = "❌ Backend not reachable";
+    console.error("Fetch error:", err);
+    statusEl.textContent =
+      "⚠️ Backend waking up or unreachable. Retrying…";
   }
 }
 
-loadOpps();
-setInterval(loadOpps, 15000);
+/* Initial load */
+loadOpportunities();
+
+/* Auto refresh every 15 seconds */
+setInterval(loadOpportunities, 15000);
