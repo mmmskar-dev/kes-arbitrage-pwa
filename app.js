@@ -1,16 +1,13 @@
-
 const API_URL = "https://fxageai-backend-1.onrender.com/opportunities";
 
 const statusEl = document.getElementById("status");
 const oppsEl = document.getElementById("opps");
 
 async function loadOpportunities() {
-  statusEl.textContent = "Fetching live P2P arbitrage…";
+  statusEl.textContent = "Fetching live P2P prices…";
 
   try {
-    const res = await fetch(API_URL, {
-      cache: "no-store"
-    });
+    const res = await fetch(API_URL, { cache: "no-store" });
 
     if (!res.ok) {
       throw new Error(`HTTP ${res.status}`);
@@ -19,26 +16,26 @@ async function loadOpportunities() {
     const data = await res.json();
 
     if (!Array.isArray(data) || data.length === 0) {
-      statusEl.textContent = "No arbitrage opportunities right now";
+      statusEl.textContent = "No P2P data available";
       oppsEl.innerHTML = "";
       return;
     }
 
-    statusEl.textContent = `Top ${data.length} live opportunities`;
+    statusEl.textContent = `Top ${data.length} live corridors`;
     oppsEl.innerHTML = "";
 
     data.slice(0, 10).forEach(o => {
       const div = document.createElement("div");
       div.className = "opp";
 
-      const spread = Number(o.ksh || 0).toFixed(2);
+      const kshValue = Number(o.ksh);
 
       div.innerHTML = `
         <div class="route">
-          ${o.source} • ${o.fiat} → KES
+          ${o.source} • USDT/${o.fiat}
         </div>
         <div class="spread">
-          ${spread} KES
+          ${isNaN(kshValue) ? "—" : kshValue.toFixed(2)} KES
         </div>
       `;
 
@@ -46,14 +43,11 @@ async function loadOpportunities() {
     });
 
   } catch (err) {
-    console.error("Fetch error:", err);
+    console.error(err);
     statusEl.textContent =
       "⚠️ Backend waking up or unreachable. Retrying…";
   }
 }
 
-/* Initial load */
 loadOpportunities();
-
-/* Auto refresh every 15 seconds */
 setInterval(loadOpportunities, 15000);
