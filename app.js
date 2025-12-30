@@ -4,41 +4,41 @@ const status = document.getElementById("status");
 const opps = document.getElementById("opps");
 
 async function load() {
-  status.textContent = "Scanning live P2P arbitrage…";
+  status.textContent = "Ranking arbitrage routes…";
   opps.innerHTML = "";
 
   try {
     const res = await fetch(API, { cache: "no-store" });
-    const data = await res.json();
+    const routes = await res.json();
 
-    if (data.error) {
-      status.textContent = data.error;
+    if (!Array.isArray(routes) || routes.length === 0) {
+      status.textContent = "No viable arbitrage routes";
       return;
     }
 
-    status.textContent = "Best arbitrage found";
+    status.textContent = "Top arbitrage routes (KES 10,000)";
 
     opps.innerHTML = `
-      <div class="opp">
-        <strong>BUY</strong><br>
-        ${data.buy.exchange} • USDT/${data.buy.fiat}<br>
-        ${data.buy.ksh} KES
-      </div>
+      <div class="grid">
+        ${routes.map((r, i) => `
+          <div class="opp ${i === 0 ? "best" : "second"}">
+            <strong>${i === 0 ? "BEST ROUTE" : "SECOND ROUTE"}</strong><br><br>
 
-      <div class="opp">
-        <strong>SELL</strong><br>
-        ${data.sell.exchange} • USDT/${data.sell.fiat}<br>
-        ${data.sell.ksh} KES
-      </div>
+            <strong>BUY</strong><br>
+            ${r.buy.exchange} • USDT/${r.buy.fiat}<br>
+            ${r.buy.ksh} KES<br><br>
 
-      <div class="opp highlight">
-        <strong>SPREAD</strong><br>
-        ${data.spreadKES} KES / USDT
-      </div>
+            <strong>SELL</strong><br>
+            ${r.sell.exchange} • USDT/${r.sell.fiat}<br>
+            ${r.sell.ksh} KES<br><br>
 
-      <div class="opp profit">
-        <strong>PROFIT on 10,000 KES</strong><br>
-        ${data.profitKES} KES
+            <strong>SPREAD</strong><br>
+            ${r.spreadKES} KES / USDT<br><br>
+
+            <strong>PROFIT</strong><br>
+            ${r.profitKES} KES
+          </div>
+        `).join("")}
       </div>
     `;
   } catch (e) {
