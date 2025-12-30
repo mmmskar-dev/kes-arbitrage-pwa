@@ -12,94 +12,93 @@
 
   <!-- Basic styling (no framework) -->
   <style>
+    <style>
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+    background: #0e1117;
+    color: #e6edf3;
+  }
+
+  header {
+    background: #161b22;
+    padding: 12px 16px;
+    font-weight: 600;
+    font-size: 18px;
+    border-bottom: 1px solid #30363d;
+  }
+
+  .container {
+    padding: 14px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .card {
+    background: #161b22;
+    border-radius: 10px;
+    padding: 14px;
+    box-shadow: 0 0 0 1px #30363d;
+  }
+
+  .route {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin: 4px 0;
+  }
+
+  .status {
+    margin-top: 8px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-block;
+  }
+
+  .EXECUTABLE {
+    background: #1f6feb;
+    color: #ffffff;
+  }
+
+  .WATCH {
+    background: #9e6a03;
+    color: #fff;
+  }
+
+  .SKIP {
+    background: #30363d;
+    color: #8b949e;
+  }
+
+  .profit {
+    font-size: 16px;
+    font-weight: 700;
+    color: #3fb950;
+  }
+
+  .muted {
+    color: #8b949e;
+    font-size: 13px;
+  }
+
+  @media (min-width: 700px) {
     .grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
-}
-
-.opp {
-  padding: 14px;
-  border-radius: 10px;
-  font-size: 14px;
-}
-
-/* BEST ROUTE */
-.best {
-  background: #0f766e;        /* deep teal */
-  color: #ffffff;             /* white text */
-  border: 2px solid #14b8a6;
-}
-
-/* SECOND ROUTE */
-.second {
-  background: #f4f4f5;        /* soft gray */
-  color: #111827;
-  border: 1px solid #d4d4d8;
-}
-
-/* Emphasis */
-.opp strong {
-  font-size: 15px;
-}
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #020617;
-      color: #e5e7eb;
+      grid-template-columns: 1fr 1fr;
     }
-
-    header {
-      padding: 16px;
-      background: #020617;
-      border-bottom: 1px solid #1e293b;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 18px;
-    }
-
-    header p {
-      margin: 4px 0 0;
-      font-size: 13px;
-      color: #94a3b8;
-    }
-
-    #status {
-      padding: 12px 16px;
-      font-size: 13px;
-      color: #38bdf8;
-    }
-
-    #opps {
-      padding: 8px 0;
-    }
-
-    .opp {
-      padding: 12px 16px;
-      border-bottom: 1px solid #1e293b;
-    }
-
-    .opp .route {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .opp .spread {
-      font-size: 16px;
-      font-weight: bold;
-      color: #22c55e;
-    }
-
-    .footer {
-      padding: 12px;
-      text-align: center;
-      font-size: 11px;
-      color: #64748b;
-    }
-  </style>
+  }
+</style>
 </head>
 
 <body>
