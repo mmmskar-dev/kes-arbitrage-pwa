@@ -15,22 +15,32 @@
     .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  gap: 14px;
 }
 
 .opp {
-  border: 1px solid #ddd;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 14px;
 }
 
+/* BEST ROUTE */
 .best {
-  border-color: #0aa;
-  background: #f0ffff;
+  background: #0f766e;        /* deep teal */
+  color: #ffffff;             /* white text */
+  border: 2px solid #14b8a6;
 }
 
+/* SECOND ROUTE */
 .second {
-  border-color: #aaa;
+  background: #f4f4f5;        /* soft gray */
+  color: #111827;
+  border: 1px solid #d4d4d8;
+}
+
+/* Emphasis */
+.opp strong {
+  font-size: 15px;
 }
     body {
       margin: 0;
